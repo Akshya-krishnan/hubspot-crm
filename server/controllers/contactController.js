@@ -63,16 +63,38 @@ const createContact = async (req, res) => {
 };
 
 // Get All Contacts
+// Get All Contacts
 const getAllContacts = async (req, res) => {
     try {
 
+        // Current page (default = 1)
+        const page = parseInt(req.query.page) || 1;
+
+        // Records per page (default = 10)
+        const limit = parseInt(req.query.limit) || 10;
+
+        // Skip records
+        const skip = (page - 1) * limit;
+
+        // Total contacts
+        const totalContacts = await Contact.countDocuments({
+            owner: req.user.id
+        });
+
+        // Fetch contacts
         const contacts = await Contact.find({
             owner: req.user.id
-        }).sort({ createdAt: -1 });
+        })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
         res.status(200).json({
             success: true,
-            count: contacts.length,
+            page,
+            limit,
+            totalContacts,
+            totalPages: Math.ceil(totalContacts / limit),
             data: contacts
         });
 
@@ -119,8 +141,84 @@ const getContactById = async (req, res) => {
     }
 };
 
+// Update Contact
+const updateContact = async (req, res) => {
+    try {
+
+        const contact = await Contact.findOneAndUpdate(
+            {
+                _id: req.params.id,
+                owner: req.user.id
+            },
+            req.body,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!contact) {
+            return res.status(404).json({
+                success: false,
+                message: "Contact not found."
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Contact updated successfully.",
+            data: contact
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+
+    }
+};
+
+// Delete Contact
+const deleteContact = async (req, res) => {
+    try {
+
+        const contact = await Contact.findOneAndDelete({
+            _id: req.params.id,
+            owner: req.user.id
+        });
+
+        if (!contact) {
+            return res.status(404).json({
+                success: false,
+                message: "Contact not found."
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Contact deleted successfully."
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+
+    }
+};
+
 module.exports = {
     createContact,
     getAllContacts,
-    getContactById
+    getContactById,
+    updateContact,
+    deleteContact
 };
