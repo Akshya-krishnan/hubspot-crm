@@ -1,16 +1,15 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
+import DashboardCards from "../../components/dashboard/DashboardCards";
 
 const Dashboard = () => {
   return (
     <DashboardLayout>
 
-      <h1 className="text-3xl font-bold">
+      <h1 className="text-3xl font-bold mb-6">
         Dashboard
       </h1>
 
-      <p className="mt-4">
-        Welcome to HubSpot CRM 🚀
-      </p>
+      <DashboardCards />
 
     </DashboardLayout>
   );
