@@ -1,26 +1,30 @@
 import StatCard from "./StatCard";
 
-const DashboardCards = () => {
+const DashboardCards = ({ stats }) => {
+  if (!stats) {
+    return <p>Loading...</p>;
+  }
+
   const cards = [
     {
       title: "Total Leads",
-      value: "1,250",
-      change: "+15% from last month",
+      value: stats.totalLeads,
+      change: "Live Data",
     },
     {
       title: "Active Deals",
-      value: "136",
-      change: "+8%",
+      value: stats.activeDeals,
+      change: "Live Data",
     },
     {
       title: "Closed Deals",
-      value: "58",
-      change: "+12%",
+      value: stats.closedDeals,
+      change: "Live Data",
     },
     {
       title: "Monthly Revenue",
-      value: "$45,000",
-      change: "+20%",
+      value: `$${stats.monthlyRevenue}`,
+      change: "Live Data",
     },
   ];
 
