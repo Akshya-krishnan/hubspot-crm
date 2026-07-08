@@ -1,11 +1,20 @@
-import { useState } from "react";
-import { createLead } from "../../services/leadService";
-import Input from "../common/Input";
-import Button from "../common/Button";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-const LeadForm = ({ onClose, onLeadCreated }) => {
-  const [formData, setFormData] = useState({
+import Input from "../common/Input";
+import Button from "../common/Button";
+
+import {
+  createLead,
+  updateLead,
+} from "../../services/leadService";
+
+const LeadForm = ({
+  lead = null,
+  onClose,
+  onLeadCreated,
+}) => {
+  const initialFormData = {
     firstName: "",
     lastName: "",
     email: "",
@@ -13,7 +22,26 @@ const LeadForm = ({ onClose, onLeadCreated }) => {
     company: "",
     leadSource: "",
     lifecycleStage: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (lead) {
+      setFormData({
+        firstName: lead.firstName || "",
+        lastName: lead.lastName || "",
+        email: lead.email || "",
+        phone: lead.phone || "",
+        company: lead.company || "",
+        leadSource: lead.leadSource || "",
+        lifecycleStage: lead.lifecycleStage || "",
+      });
+    } else {
+      setFormData(initialFormData);
+    }
+  }, [lead]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -23,35 +51,41 @@ const LeadForm = ({ onClose, onLeadCreated }) => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    await createLead(formData);
+    if (!formData.firstName.trim()) {
+      return toast.error("First Name is required");
+    }
 
-    toast.success("Lead created successfully");
+    if (!formData.email.trim()) {
+      return toast.error("Email is required");
+    }
 
-    onLeadCreated();
+    try {
+      setLoading(true);
 
-    onClose();
+      if (lead) {
+        await updateLead(lead._id, formData);
+        toast.success("Lead updated successfully");
+      } else {
+        await createLead(formData);
+        toast.success("Lead created successfully");
+      }
 
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      company: "",
-      leadSource: "",
-      lifecycleStage: "",
-    });
+      onLeadCreated?.();
+      onClose?.();
 
-  } catch (error) {
-    console.error(error);
+    } catch (error) {
+      console.error(error);
 
-    toast.error(
-      error.response?.data?.message || "Failed to create lead"
-    );
-  }
-};
+      toast.error(
+        error.response?.data?.message ||
+        "Something went wrong"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -145,17 +179,23 @@ const LeadForm = ({ onClose, onLeadCreated }) => {
       <div className="flex justify-end gap-3 pt-4">
 
         <Button
-  type="button"
-  onClick={onClose}
-  className="bg-gray-300 text-black hover:bg-gray-400 w-auto px-6"
->
-  Cancel
-</Button>
+          type="button"
+          onClick={onClose}
+          className="bg-gray-300 text-black hover:bg-gray-400 w-auto px-6"
+        >
+          Cancel
+        </Button>
+
         <Button
           type="submit"
+          disabled={loading}
           className="w-auto px-6"
         >
-          Save Lead
+          {loading
+            ? "Saving..."
+            : lead
+            ? "Update Lead"
+            : "Save Lead"}
         </Button>
 
       </div>
