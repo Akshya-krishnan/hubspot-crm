@@ -4,6 +4,8 @@ import LeadToolbar from "../../components/leads/LeadToolbar";
 import LeadTable from "../../components/leads/LeadTable";
 import Pagination from "../../components/common/Pagination";
 import { getLeads } from "../../services/leadService";
+import LeadDrawer from "../../components/leads/LeadDrawer";
+
 
 const Leads = () => {
   const [leads, setLeads] = useState([]);
@@ -11,6 +13,7 @@ const Leads = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const fetchLeads = async (page = 1) => {
     try {
@@ -37,7 +40,15 @@ const Leads = () => {
     <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">Leads</h1>
 
-      <LeadToolbar />
+      <LeadToolbar
+    onCreateLead={() => setIsDrawerOpen(true)}
+/>
+
+<LeadDrawer
+  isOpen={isDrawerOpen}
+  onClose={() => setIsDrawerOpen(false)}
+  onLeadCreated={() => fetchLeads(currentPage)}
+/>
 
       <LeadTable leads={leads} loading={loading} />
 

@@ -1,10 +1,11 @@
-import api from "./axios";
+import api from "./api";
 
 const getAuthConfig = () => ({
   headers: {
     Authorization: `Bearer ${localStorage.getItem("token")}`,
   },
 });
+
 
 export const getLeads = async (page = 1, limit = 10, search = "") => {
   const response = await api.get(

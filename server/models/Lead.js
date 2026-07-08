@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const contactSchema = new mongoose.Schema(
+const leadSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -33,13 +33,26 @@ const contactSchema = new mongoose.Schema(
 
     leadSource: {
       type: String,
-      enum: ["Website", "Referral", "Event", "Other"],
+      enum: [
+        "Website",
+        "Referral",
+        "Facebook",
+        "LinkedIn",
+        "Other",
+      ],
       default: "Other",
     },
 
     lifecycleStage: {
       type: String,
-      enum: ["Lead", "Qualified", "Customer"],
+      enum: [
+        "Subscriber",
+        "Lead",
+        "Marketing Qualified Lead",
+        "Sales Qualified Lead",
+        "Opportunity",
+        "Customer",
+      ],
       default: "Lead",
     },
 
@@ -54,4 +67,4 @@ const contactSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Contact", contactSchema);
+module.exports = mongoose.model("Lead", leadSchema);
