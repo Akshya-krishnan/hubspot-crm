@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+
 import DashboardLayout from "../../layouts/DashboardLayout";
 import LeadToolbar from "../../components/leads/LeadToolbar";
 import LeadTable from "../../components/leads/LeadTable";
 import Pagination from "../../components/common/Pagination";
 import LeadDrawer from "../../components/leads/LeadDrawer";
-import { getLeads } from "../../services/leadService";
+
+import {
+  getLeads,
+  deleteLead,
+} from "../../services/leadService";
 
 const Leads = () => {
   const [leads, setLeads] = useState([]);
@@ -36,6 +42,29 @@ const Leads = () => {
     fetchLeads(currentPage);
   }, [currentPage]);
 
+
+  const handleDelete = async (id) => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this lead?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    await deleteLead(id);
+
+    toast.success("Lead deleted successfully");
+
+    fetchLeads(currentPage);
+  } catch (error) {
+    console.error(error);
+
+    toast.error(
+      error.response?.data?.message || "Failed to delete lead"
+    );
+  }
+};
+
   return (
     <DashboardLayout>
       <h1 className="text-3xl font-bold mb-6">Leads</h1>
@@ -58,14 +87,14 @@ const Leads = () => {
       />
 
       <LeadTable
-        leads={leads}
-        loading={loading}
-        onEdit={(lead) => {
-          setEditingLead(lead);
-          setIsDrawerOpen(true);
-        }}
-      />
-
+  leads={leads}
+  loading={loading}
+  onEdit={(lead) => {
+    setEditingLead(lead);
+    setIsDrawerOpen(true);
+  }}
+  onDelete={handleDelete}
+/>
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

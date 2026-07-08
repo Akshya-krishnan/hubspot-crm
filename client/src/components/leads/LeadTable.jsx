@@ -5,8 +5,9 @@ const LeadTable = ({
   leads,
   loading,
   onEdit,
+  onDelete,
 }) => {
-  if (loading) {
+      if (loading) {
     return <p>Loading...</p>;
   }
 
@@ -55,10 +56,11 @@ const LeadTable = ({
             </button>
 
             <button
-              className="text-red-600 hover:underline"
-            >
-              Delete
-            </button>
+  onClick={() => onDelete(lead._id)}
+  className="text-red-600 hover:underline"
+>
+  Delete
+</button>
           </td>
 
         </tr>
