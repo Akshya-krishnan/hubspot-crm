@@ -22,25 +22,27 @@ const Leads = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [editingLead, setEditingLead] = useState(null);
 
-  const fetchLeads = async (page = 1) => {
-    try {
-      setLoading(true);
+  const [search, setSearch] = useState("");
 
-      const response = await getLeads(page);
+  const fetchLeads = async (page = 1, searchText = search) => {
+  try {
+    setLoading(true);
 
-      setLeads(response.data);
-      setCurrentPage(response.page);
-      setTotalPages(response.totalPages);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const response = await getLeads(page, 10, searchText);
+
+    setLeads(response.data);
+    setCurrentPage(response.page);
+    setTotalPages(response.totalPages);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
-    fetchLeads(currentPage);
-  }, [currentPage]);
+  fetchLeads(currentPage, search);
+}, [currentPage, search]);
 
 
   const handleDelete = async (id) => {
@@ -70,11 +72,13 @@ const Leads = () => {
       <h1 className="text-3xl font-bold mb-6">Leads</h1>
 
       <LeadToolbar
-        onCreateLead={() => {
-          setEditingLead(null);
-          setIsDrawerOpen(true);
-        }}
-      />
+  search={search}
+  onSearchChange={setSearch}
+  onCreateLead={() => {
+    setEditingLead(null);
+    setIsDrawerOpen(true);
+  }}
+/>
 
       <LeadDrawer
         isOpen={isDrawerOpen}
