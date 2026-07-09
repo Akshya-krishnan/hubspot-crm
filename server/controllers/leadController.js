@@ -66,20 +66,30 @@ const createLead = async (req, res) => {
 const getAllLeads = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+const limit = parseInt(req.query.limit) || 10;
+const skip = (page - 1) * limit;
 
-    const search = req.query.search || "";
+const search = req.query.search || "";
+const leadSource = req.query.leadSource || "";
+const lifecycleStage = req.query.lifecycleStage || "";
 
-    const query = {
-      owner: req.user.id,
-      $or: [
-        { firstName: { $regex: search, $options: "i" } },
-        { lastName: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { company: { $regex: search, $options: "i" } },
-      ],
-    };
+const query = {
+  owner: req.user.id,
+  $or: [
+    { firstName: { $regex: search, $options: "i" } },
+    { lastName: { $regex: search, $options: "i" } },
+    { email: { $regex: search, $options: "i" } },
+    { company: { $regex: search, $options: "i" } },
+  ],
+};
+
+if (leadSource) {
+  query.leadSource = leadSource;
+}
+
+if (lifecycleStage) {
+  query.lifecycleStage = lifecycleStage;
+}
 
     const totalLeads = await Lead.countDocuments(query);
 

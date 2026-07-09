@@ -24,12 +24,20 @@ const Leads = () => {
 
   const [search, setSearch] = useState("");
 
+  const [leadSource, setLeadSource] = useState("");
+const [lifecycleStage, setLifecycleStage] = useState("");
+
   const fetchLeads = async (page = 1, searchText = search) => {
   try {
     setLoading(true);
 
-    const response = await getLeads(page, 10, searchText);
-
+    const response = await getLeads(
+  page,
+  10,
+  search,
+  leadSource,
+  lifecycleStage
+);
     setLeads(response.data);
     setCurrentPage(response.page);
     setTotalPages(response.totalPages);
@@ -40,9 +48,9 @@ const Leads = () => {
   }
 };
 
-  useEffect(() => {
-  fetchLeads(currentPage, search);
-}, [currentPage, search]);
+ useEffect(() => {
+  fetchLeads(currentPage);
+}, [currentPage, search, leadSource, lifecycleStage]);
 
 
   const handleDelete = async (id) => {
@@ -74,6 +82,13 @@ const Leads = () => {
       <LeadToolbar
   search={search}
   onSearchChange={setSearch}
+
+  leadSource={leadSource}
+  onLeadSourceChange={setLeadSource}
+
+  lifecycleStage={lifecycleStage}
+  onLifecycleStageChange={setLifecycleStage}
+
   onCreateLead={() => {
     setEditingLead(null);
     setIsDrawerOpen(true);

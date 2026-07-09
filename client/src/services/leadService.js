@@ -7,9 +7,15 @@ const getAuthConfig = () => ({
 });
 
 
-export const getLeads = async (page = 1, limit = 10, search = "") => {
+export const getLeads = async (
+  page = 1,
+  limit = 10,
+  search = "",
+  leadSource = "",
+  lifecycleStage = ""
+) => {
   const response = await api.get(
-    `/leads?page=${page}&limit=${limit}&search=${search}`,
+    `/leads?page=${page}&limit=${limit}&search=${search}&leadSource=${leadSource}&lifecycleStage=${lifecycleStage}`,
     getAuthConfig()
   );
 
