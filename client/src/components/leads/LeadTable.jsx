@@ -1,5 +1,6 @@
 import DataTable from "../common/DataTable";
 import StatusBadge from "../common/StatusBadge";
+import { useNavigate } from "react-router-dom";
 
 const LeadTable = ({
   leads,
@@ -10,6 +11,8 @@ const LeadTable = ({
       if (loading) {
     return <p>Loading...</p>;
   }
+
+  const navigate = useNavigate();
 
   return (
     <DataTable
@@ -23,7 +26,11 @@ const LeadTable = ({
       ]}
     >
       {leads.map((lead) => (
-        <tr key={lead._id} className="border-b">
+        <tr
+  key={lead._id}
+  className="border-b hover:bg-gray-50 cursor-pointer"
+  onClick={() => navigate(`/leads/${lead._id}`)}
+>
 
           <td className="p-4">
             {lead.firstName} {lead.lastName}
@@ -48,21 +55,26 @@ const LeadTable = ({
           </td>
 
           <td className="p-4">
-            <button
-              onClick={() => onEdit(lead)}
-              className="text-blue-600 hover:underline mr-4"
-            >
-              Edit
-            </button>
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      onEdit(lead);
+    }}
+    className="text-blue-600 hover:underline mr-4"
+  >
+    Edit
+  </button>
 
-            <button
-  onClick={() => onDelete(lead._id)}
-  className="text-red-600 hover:underline"
->
-  Delete
-</button>
-          </td>
-
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      onDelete(lead._id);
+    }}
+    className="text-red-600 hover:underline"
+  >
+    Delete
+  </button>
+</td>
         </tr>
       ))}
     </DataTable>

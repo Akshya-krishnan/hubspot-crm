@@ -50,3 +50,12 @@ export const deleteLead = async (id) => {
 
   return response.data;
 };
+
+export const getLeadById = async (id) => {
+  const response = await api.get(
+    `/leads/${id}`,
+    getAuthConfig()
+  );
+
+  return response.data;
+};
