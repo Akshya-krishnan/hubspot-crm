@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { getLeadById } from "../../services/leadService";
 import NotesList from "../../components/notes/NotesList";
+import TaskList from "../../components/tasks/TaskList";
 
 const LeadDetails = () => {
   const { id } = useParams();
@@ -94,6 +95,10 @@ const LeadDetails = () => {
     <div className="mt-8">
       <NotesList />
     </div>
+
+    <div className="mt-8">
+  <TaskList />
+</div>
 
   </DashboardLayout>
 );
