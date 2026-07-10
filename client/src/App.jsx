@@ -5,6 +5,7 @@ import Leads from "./pages/leads/Leads";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import LeadDetails from "./pages/leads/LeadDetails";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
   return (
