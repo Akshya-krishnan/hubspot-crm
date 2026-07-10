@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const leadRoutes = require("./routes/leadRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes")
 const noteRoutes = require("./routes/noteRoutes");
+const taskRoutes = require("./routes/taskRoutes");
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api", noteRoutes);
+app.use("/api", taskRoutes);
 
 app.get("/", (req, res) => {
     res.status(200).json({
