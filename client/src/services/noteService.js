@@ -24,3 +24,23 @@ export const createNote = async (leadId, noteData) => {
 
   return response.data;
 };
+
+// We'll use these in the next sprint
+export const updateNote = async (id, noteData) => {
+  const response = await api.put(
+    `/notes/${id}`,
+    noteData,
+    getAuthConfig()
+  );
+
+  return response.data;
+};
+
+export const deleteNote = async (id) => {
+  const response = await api.delete(
+    `/notes/${id}`,
+    getAuthConfig()
+  );
+
+  return response.data;
+};

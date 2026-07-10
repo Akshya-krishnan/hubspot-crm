@@ -1,5 +1,91 @@
-const NoteForm = () => {
-  return <div>Note Form</div>;
+import { useState } from "react";
+import Input from "../common/Input";
+import Button from "../common/Button";
+import { createNote } from "../../services/noteService";
+import toast from "react-hot-toast";
+
+const NoteForm = ({
+  leadId,
+  onClose,
+  onNoteCreated,
+}) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await createNote(leadId, formData);
+
+      toast.success("Note created successfully");
+
+      onNoteCreated();
+      onClose();
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to create note");
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-5"
+    >
+      <Input
+        label="Title"
+        name="title"
+        value={formData.title}
+        onChange={handleChange}
+        placeholder="Enter title"
+      />
+
+      <div>
+        <label className="block mb-2 font-medium">
+          Content
+        </label>
+
+        <textarea
+          name="content"
+          value={formData.content}
+          onChange={handleChange}
+          rows={6}
+          className="w-full border rounded-lg p-3"
+          placeholder="Write your note..."
+        />
+      </div>
+
+      <div className="flex justify-end gap-3">
+
+        <Button
+          type="button"
+          onClick={onClose}
+          className="bg-gray-300 text-black hover:bg-gray-400 w-auto px-6"
+        >
+          Cancel
+        </Button>
+
+        <Button
+          type="submit"
+          className="w-auto px-6"
+        >
+          Save Note
+        </Button>
+
+      </div>
+    </form>
+  );
 };
 
 export default NoteForm;
