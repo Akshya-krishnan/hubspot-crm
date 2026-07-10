@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import { getLeadById } from "../../services/leadService";
+import NotesList from "../../components/notes/NotesList";
 
 const LeadDetails = () => {
   const { id } = useParams();
@@ -41,54 +42,61 @@ const LeadDetails = () => {
   }
 
   return (
-    <DashboardLayout>
-      <Link
-        to="/leads"
-        className="text-blue-600 hover:underline"
-      >
-        ← Back to Leads
-      </Link>
+  <DashboardLayout>
+    <Link
+      to="/leads"
+      className="text-blue-600 hover:underline"
+    >
+      ← Back to Leads
+    </Link>
 
-      <h1 className="text-3xl font-bold mt-4">
-        {lead.firstName} {lead.lastName}
-      </h1>
+    <h1 className="text-3xl font-bold mt-4">
+      {lead.firstName} {lead.lastName}
+    </h1>
 
-      <div className="bg-white rounded-xl shadow p-6 mt-6">
-        <h2 className="text-xl font-semibold mb-4">
-          Lead Information
-        </h2>
+    {/* Lead Information */}
+    <div className="bg-white rounded-xl shadow p-6 mt-6">
+      <h2 className="text-xl font-semibold mb-4">
+        Lead Information
+      </h2>
 
-        <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4">
 
-          <div>
-            <p className="text-gray-500">Email</p>
-            <p>{lead.email}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Phone</p>
-            <p>{lead.phone || "-"}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Company</p>
-            <p>{lead.company || "-"}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Lead Source</p>
-            <p>{lead.leadSource}</p>
-          </div>
-
-          <div>
-            <p className="text-gray-500">Lifecycle Stage</p>
-            <p>{lead.lifecycleStage}</p>
-          </div>
-
+        <div>
+          <p className="text-gray-500">Email</p>
+          <p>{lead.email}</p>
         </div>
+
+        <div>
+          <p className="text-gray-500">Phone</p>
+          <p>{lead.phone || "-"}</p>
+        </div>
+
+        <div>
+          <p className="text-gray-500">Company</p>
+          <p>{lead.company || "-"}</p>
+        </div>
+
+        <div>
+          <p className="text-gray-500">Lead Source</p>
+          <p>{lead.leadSource}</p>
+        </div>
+
+        <div>
+          <p className="text-gray-500">Lifecycle Stage</p>
+          <p>{lead.lifecycleStage}</p>
+        </div>
+
       </div>
-    </DashboardLayout>
-  );
+    </div>
+
+    {/* Notes Section */}
+    <div className="mt-8">
+      <NotesList />
+    </div>
+
+  </DashboardLayout>
+);
 };
 
 export default LeadDetails;
