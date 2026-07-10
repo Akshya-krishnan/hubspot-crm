@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getNotes } from "../../services/noteService";
-import NoteCard from "./NoteCard";
+import toast from "react-hot-toast";
+
+import { getNotes, deleteNote } from "../../services/noteService";
+
 import Button from "../common/Button";
+import NoteCard from "./NoteCard";
 import NoteDrawer from "./NoteDrawer";
 
 const NotesList = () => {
@@ -10,14 +13,20 @@ const NotesList = () => {
 
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState(null);
 
   const fetchNotes = async () => {
     try {
+      setLoading(true);
+
       const response = await getNotes(id);
       setNotes(response.data);
+
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load notes");
     } finally {
       setLoading(false);
     }
@@ -26,6 +35,26 @@ const NotesList = () => {
   useEffect(() => {
     fetchNotes();
   }, []);
+
+  const handleDelete = async (noteId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this note?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteNote(noteId);
+
+      toast.success("Note deleted successfully");
+
+      fetchNotes();
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete note");
+    }
+  };
 
   if (loading) {
     return <p>Loading notes...</p>;
@@ -41,7 +70,10 @@ const NotesList = () => {
 
         <Button
           className="w-auto px-5"
-          onClick={() => setIsDrawerOpen(true)}
+          onClick={() => {
+            setEditingNote(null);
+            setIsDrawerOpen(true);
+          }}
         >
           + Add Note
         </Button>
@@ -57,6 +89,11 @@ const NotesList = () => {
             <NoteCard
               key={note._id}
               note={note}
+              onEdit={(note) => {
+                setEditingNote(note);
+                setIsDrawerOpen(true);
+              }}
+              onDelete={handleDelete}
             />
           ))}
         </div>
@@ -64,8 +101,12 @@ const NotesList = () => {
 
       <NoteDrawer
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setEditingNote(null);
+        }}
         leadId={id}
+        note={editingNote}
         onNoteCreated={fetchNotes}
       />
 

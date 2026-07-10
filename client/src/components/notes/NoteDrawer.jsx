@@ -5,15 +5,17 @@ const NoteDrawer = ({
   isOpen,
   onClose,
   leadId,
+  note,
   onNoteCreated,
 }) => {
   return (
     <Drawer
       isOpen={isOpen}
       onClose={onClose}
-      title="Create Note"
+      title={note ? "Edit Note" : "Create Note"}
     >
       <NoteForm
+        note={note}
         leadId={leadId}
         onClose={onClose}
         onNoteCreated={onNoteCreated}

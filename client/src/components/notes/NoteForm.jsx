@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Input from "../common/Input";
 import Button from "../common/Button";
-import { createNote } from "../../services/noteService";
 import toast from "react-hot-toast";
+import {
+  createNote,
+  updateNote,
+} from "../../services/noteService";
 
 const NoteForm = ({
+  note,
   leadId,
   onClose,
   onNoteCreated,
@@ -22,21 +26,39 @@ const NoteForm = ({
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
+  try {
+    if (note) {
+      await updateNote(note._id, formData);
+      toast.success("Note updated successfully");
+    } else {
       await createNote(leadId, formData);
-
       toast.success("Note created successfully");
-
-      onNoteCreated();
-      onClose();
-
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create note");
     }
-  };
+
+    onNoteCreated();
+    onClose();
+
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to save note");
+  }
+};
+
+  useEffect(() => {
+  if (note) {
+    setFormData({
+      title: note.title || "",
+      content: note.content || "",
+    });
+  } else {
+    setFormData({
+      title: "",
+      content: "",
+    });
+  }
+}, [note]);
 
   return (
     <form

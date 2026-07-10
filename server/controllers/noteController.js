@@ -16,7 +16,6 @@ const createNote = async (req, res) => {
       });
     }
 
-    // Verify lead exists and belongs to user
     const lead = await Lead.findOne({
       _id: leadId,
       owner: req.user.id,
@@ -30,15 +29,14 @@ const createNote = async (req, res) => {
     }
 
     const note = await Note.create({
-      lead: leadId,
-      owner: req.user.id,
       title,
       content,
+      lead: leadId,
+      owner: req.user.id,
     });
 
     res.status(201).json({
       success: true,
-      message: "Note created successfully.",
       data: note,
     });
 
@@ -53,14 +51,12 @@ const createNote = async (req, res) => {
 };
 
 // ==============================
-// Get Notes for Lead
+// Get Notes
 // ==============================
 const getLeadNotes = async (req, res) => {
   try {
-    const { leadId } = req.params;
-
     const notes = await Note.find({
-      lead: leadId,
+      lead: req.params.leadId,
       owner: req.user.id,
     }).sort({ createdAt: -1 });
 
@@ -79,7 +75,81 @@ const getLeadNotes = async (req, res) => {
   }
 };
 
+// ==============================
+// Update Note
+// ==============================
+const updateNote = async (req, res) => {
+  try {
+    const note = await Note.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        owner: req.user.id,
+      },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!note) {
+      return res.status(404).json({
+        success: false,
+        message: "Note not found.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Note updated successfully.",
+      data: note,
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+// ==============================
+// Delete Note
+// ==============================
+const deleteNote = async (req, res) => {
+  try {
+    const note = await Note.findOneAndDelete({
+      _id: req.params.id,
+      owner: req.user.id,
+    });
+
+    if (!note) {
+      return res.status(404).json({
+        success: false,
+        message: "Note not found.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Note deleted successfully.",
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   createNote,
   getLeadNotes,
+  updateNote,
+  deleteNote,
 };
