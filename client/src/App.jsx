@@ -8,6 +8,8 @@ import LeadDetails from "./pages/leads/LeadDetails";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Contacts from "./pages/contacts/Contacts";
 import ContactDetails from "./pages/contacts/ContactDetails";
+import Companies from "./pages/companies/Companies";
+import CompanyDetails from "./pages/companies/CompanyDetails";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/leads/:id" element={<LeadDetails />}/>
         <Route path="/contacts" element={<Contacts />} />
         <Route path="/contacts/:id" element={<ContactDetails />} />
+        <Route path="/companies" element={<Companies />} />
+        <Route path="/companies/:id" element={<CompanyDetails />} />
         <Route
   path="/dashboard"
   element={
