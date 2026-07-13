@@ -1,4 +1,6 @@
 const Company = require("../models/Company");
+const Contact = require("../models/Contact");
+const Lead = require("../models/Lead");
 
 // ==============================
 // Create Company
@@ -138,6 +140,82 @@ const getCompanyById = async (req, res) => {
 };
 
 // ==============================
+// Get Company Contacts
+// ==============================
+const getCompanyContacts = async (req, res) => {
+  try {
+    const company = await Company.findOne({
+      _id: req.params.id,
+      owner: req.user.id,
+    });
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found.",
+      });
+    }
+
+    const contacts = await Contact.find({
+      company: company.name,
+      owner: req.user.id,
+    }).sort({ firstName: 1 });
+
+    res.status(200).json({
+      success: true,
+      total: contacts.length,
+      data: contacts,
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+// ==============================
+// Get Company Leads
+// ==============================
+const getCompanyLeads = async (req, res) => {
+  try {
+    const company = await Company.findOne({
+      _id: req.params.id,
+      owner: req.user.id,
+    });
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found.",
+      });
+    }
+
+    const leads = await Lead.find({
+      company: company.name,
+      owner: req.user.id,
+    }).sort({ firstName: 1 });
+
+    res.status(200).json({
+      success: true,
+      total: leads.length,
+      data: leads,
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+// ==============================
 // Update Company
 // ==============================
 const updateCompany = async (req, res) => {
@@ -213,6 +291,8 @@ module.exports = {
   createCompany,
   getAllCompanies,
   getCompanyById,
+  getCompanyContacts,
+  getCompanyLeads,
   updateCompany,
   deleteCompany,
 };
