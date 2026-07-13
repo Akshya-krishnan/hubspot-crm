@@ -1,4 +1,5 @@
 const Contact = require("../models/Contact");
+const Lead = require("../models/Lead");
 
 // ==============================
 // Create Contact
@@ -61,6 +62,65 @@ const createContact = async (req, res) => {
 };
 
 // ==============================
+// Convert Lead To Contact
+// ==============================
+// ==============================
+// Convert Lead To Contact
+// ==============================
+const convertLeadToContact = async (req, res) => {
+  try {
+    const lead = await Lead.findOne({
+      _id: req.params.leadId,
+      owner: req.user.id,
+    });
+
+    if (!lead) {
+      return res.status(404).json({
+        success: false,
+        message: "Lead not found.",
+      });
+    }
+
+    if (lead.isConverted) {
+      return res.status(400).json({
+        success: false,
+        message: "Lead already converted.",
+      });
+    }
+
+    const contact = await Contact.create({
+      firstName: lead.firstName,
+      lastName: lead.lastName,
+      email: lead.email,
+      phone: lead.phone,
+      company: lead.company,
+      leadSource: lead.leadSource,
+      lifecycleStage: lead.lifecycleStage,
+      owner: req.user.id,
+    });
+
+    // IMPORTANT
+    lead.isConverted = true;
+    lead.convertedContact = contact._id;
+
+    await lead.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Lead converted successfully.",
+      data: contact,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+// ==============================
 // Get All Contacts
 // ==============================
 const getAllContacts = async (req, res) => {
@@ -107,7 +167,7 @@ const getAllContacts = async (req, res) => {
 };
 
 // ==============================
-// Get Single Contact
+// Get Contact By ID
 // ==============================
 const getContactById = async (req, res) => {
   try {
@@ -209,6 +269,7 @@ const deleteContact = async (req, res) => {
 
 module.exports = {
   createContact,
+  convertLeadToContact,
   getAllContacts,
   getContactById,
   updateContact,

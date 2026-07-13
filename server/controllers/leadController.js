@@ -94,9 +94,10 @@ if (lifecycleStage) {
     const totalLeads = await Lead.countDocuments(query);
 
     const leads = await Lead.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+  .populate("convertedContact")
+  .sort({ createdAt: -1 })
+  .skip(skip)
+  .limit(limit);
 
     res.status(200).json({
       success: true,
@@ -119,12 +120,15 @@ if (lifecycleStage) {
 // ==============================
 // Get Single Lead
 // ==============================
+// ==============================
+// Get Single Lead
+// ==============================
 const getLeadById = async (req, res) => {
   try {
     const lead = await Lead.findOne({
-      _id: req.params.id,
-      owner: req.user.id,
-    });
+  _id: req.params.id,
+  owner: req.user.id,
+}).populate("convertedContact");
 
     if (!lead) {
       return res.status(404).json({

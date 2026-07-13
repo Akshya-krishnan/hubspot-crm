@@ -56,3 +56,17 @@ export const deleteContact = async (id) => {
 
   return response.data;
 };
+
+// ==============================
+// Convert Lead to Contact
+// ==============================
+
+export const convertLeadToContact = async (leadId) => {
+  const response = await api.post(
+    `/contacts/convert/${leadId}`,
+    {},
+    getAuthConfig()
+  );
+
+  return response.data;
+};

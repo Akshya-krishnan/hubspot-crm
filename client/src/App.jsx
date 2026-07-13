@@ -8,7 +8,6 @@ import LeadDetails from "./pages/leads/LeadDetails";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Contacts from "./pages/contacts/Contacts";
 import ContactDetails from "./pages/contacts/ContactDetails";
-import Contacts from "./pages/contacts/Contacts";
 
 function App() {
   return (
@@ -22,7 +21,6 @@ function App() {
         <Route path="/leads/:id" element={<LeadDetails />}/>
         <Route path="/contacts" element={<Contacts />} />
         <Route path="/contacts/:id" element={<ContactDetails />} />
-        <Route path="/contacts" element={<Contacts />} />
         <Route
   path="/dashboard"
   element={

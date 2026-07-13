@@ -4,8 +4,8 @@ import toast from "react-hot-toast";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import ContactToolbar from "../../components/contacts/ContactToolbar";
 import ContactTable from "../../components/contacts/ContactTable";
-import Pagination from "../../components/common/Pagination";
 import ContactDrawer from "../../components/contacts/ContactDrawer";
+import Pagination from "../../components/common/Pagination";
 
 import {
   getContacts,
@@ -19,39 +19,46 @@ const Contacts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [editingContact, setEditingContact] = useState(null);
-
   const [search, setSearch] = useState("");
 
-  const [leadSource, setLeadSource] = useState("");
-  const [lifecycleStage, setLifecycleStage] = useState("");
+  const [editingContact, setEditingContact] = useState(null);
 
-  const fetchContacts = async (page = 1) => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const fetchContacts = async (
+    page = currentPage,
+    searchText = search
+  ) => {
     try {
       setLoading(true);
 
       const response = await getContacts(
         page,
         10,
-        search,
-        leadSource,
-        lifecycleStage
+        searchText
       );
 
       setContacts(response.data);
       setCurrentPage(response.page);
       setTotalPages(response.totalPages);
+
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load contacts");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchContacts(currentPage);
-  }, [currentPage, search, leadSource, lifecycleStage]);
+    fetchContacts(currentPage, search);
+  }, [currentPage]);
+
+  const handleSearch = (value) => {
+    setSearch(value);
+    setCurrentPage(1);
+    fetchContacts(1, value);
+  };
 
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm(
@@ -65,30 +72,24 @@ const Contacts = () => {
 
       toast.success("Contact deleted successfully");
 
-      fetchContacts(currentPage);
+      fetchContacts(currentPage, search);
+
     } catch (error) {
       console.error(error);
-
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to delete contact"
-      );
+      toast.error("Failed to delete contact");
     }
   };
 
   return (
     <DashboardLayout>
+
       <h1 className="text-3xl font-bold mb-6">
         Contacts
       </h1>
 
       <ContactToolbar
         search={search}
-        onSearchChange={setSearch}
-        leadSource={leadSource}
-        onLeadSourceChange={setLeadSource}
-        lifecycleStage={lifecycleStage}
-        onLifecycleStageChange={setLifecycleStage}
+        onSearch={handleSearch}
         onCreateContact={() => {
           setEditingContact(null);
           setIsDrawerOpen(true);
@@ -103,7 +104,7 @@ const Contacts = () => {
         }}
         contact={editingContact}
         onContactCreated={() =>
-          fetchContacts(currentPage)
+          fetchContacts(currentPage, search)
         }
       />
 
@@ -122,6 +123,7 @@ const Contacts = () => {
         totalPages={totalPages}
         onPageChange={setCurrentPage}
       />
+
     </DashboardLayout>
   );
 };

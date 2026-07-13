@@ -61,6 +61,19 @@ const leadSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
+    // NEW
+    isConverted: {
+      type: Boolean,
+      default: false,
+    },
+
+    // NEW
+    convertedContact: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Contact",
+      default: null,
+    },
   },
   {
     timestamps: true,

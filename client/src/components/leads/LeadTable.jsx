@@ -8,11 +8,11 @@ const LeadTable = ({
   onEdit,
   onDelete,
 }) => {
-      if (loading) {
+  const navigate = useNavigate();
+
+  if (loading) {
     return <p>Loading...</p>;
   }
-
-  const navigate = useNavigate();
 
   return (
     <DataTable
@@ -27,17 +27,16 @@ const LeadTable = ({
     >
       {leads.map((lead) => (
         <tr
-  key={lead._id}
-  className="border-b hover:bg-gray-50 cursor-pointer"
-  onClick={() => navigate(`/leads/${lead._id}`)}
->
-
+          key={lead._id}
+          className="border-b hover:bg-gray-50 cursor-pointer"
+          onClick={() => navigate(`/leads/${lead._id}`)}
+        >
           <td className="p-4">
             {lead.firstName} {lead.lastName}
           </td>
 
           <td className="p-4">
-            {lead.company}
+            {lead.company || "-"}
           </td>
 
           <td className="p-4">
@@ -45,36 +44,48 @@ const LeadTable = ({
           </td>
 
           <td className="p-4">
-            {lead.phone}
+            {lead.phone || "-"}
           </td>
 
           <td className="p-4">
-            <StatusBadge
-              status={lead.lifecycleStage}
-            />
+            <StatusBadge status={lead.lifecycleStage} />
           </td>
 
-          <td className="p-4">
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      onEdit(lead);
-    }}
-    className="text-blue-600 hover:underline mr-4"
-  >
-    Edit
-  </button>
+          <td className="p-4 space-x-3">
 
-  <button
-    onClick={(e) => {
-      e.stopPropagation();
-      onDelete(lead._id);
-    }}
-    className="text-red-600 hover:underline"
-  >
-    Delete
-  </button>
-</td>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(lead);
+              }}
+              className="text-blue-600 hover:underline"
+            >
+              Edit
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(lead._id);
+              }}
+              className="text-red-600 hover:underline"
+            >
+              Delete
+            </button>
+
+            {lead.isConverted && lead.convertedContact && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/contacts/${lead.convertedContact._id}`);
+                }}
+                className="text-green-600 hover:underline"
+              >
+                View Contact
+              </button>
+            )}
+
+          </td>
         </tr>
       ))}
     </DataTable>
