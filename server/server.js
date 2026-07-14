@@ -9,6 +9,7 @@
     const taskRoutes = require("./routes/taskRoutes");
     const contactRoutes = require("./routes/contactRoutes");
     const companyRoutes = require("./routes/companyRoutes");
+    const dealRoutes = require("./routes/dealRoutes");
 
     dotenv.config();
 
@@ -25,6 +26,7 @@
     app.use("/api", taskRoutes);
     app.use("/api/contacts", contactRoutes);
     app.use("/api/companies", companyRoutes);
+    app.use("/api/deals", dealRoutes);
 
     app.get("/", (req, res) => {
         res.status(200).json({

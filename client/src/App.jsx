@@ -10,6 +10,8 @@ import Contacts from "./pages/contacts/Contacts";
 import ContactDetails from "./pages/contacts/ContactDetails";
 import Companies from "./pages/companies/Companies";
 import CompanyDetails from "./pages/companies/CompanyDetails";
+import Deals from "./pages/deals/Deals";
+import DealDetails from "./pages/deals/DealDetails";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/contacts/:id" element={<ContactDetails />} />
         <Route path="/companies" element={<Companies />} />
         <Route path="/companies/:id" element={<CompanyDetails />} />
+        <Route path="/deals" element={<Deals />} />
+        <Route path="/deals/:id" element={<DealDetails />} />
         <Route
   path="/dashboard"
   element={
